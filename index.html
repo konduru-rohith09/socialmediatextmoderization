@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Toxic Text Moderation</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        /* Background Gradient + Animated Shapes */
+        body {
+            margin: 0;
+            padding: 2rem;
+            height: 100vh;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        body::before, body::after {
+            content: "";
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.05);
+            animation: float 12s infinite ease-in-out;
+        }
+        body::before {
+            width: 400px;
+            height: 400px;
+            top: -100px;
+            left: -100px;
+        }
+        body::after {
+            width: 300px;
+            height: 300px;
+            bottom: -80px;
+            right: -80px;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0); }
+            50% { transform: translateY(-20px) rotate(20deg); }
+        }
+
+        /* Glassmorphic Card */
+        .card {
+            border-radius: 1.5rem;
+            padding: 2rem;
+            width: 700px;
+            max-width: 95%;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            color: #fff;
+        }
+
+        h1 {
+            font-weight: 700;
+            text-align: center;
+            color: #fff;
+            margin-bottom: 1.5rem;
+        }
+
+        textarea {
+            border-radius: 1rem !important;
+            box-shadow: none;
+            border: 1px solid rgba(255,255,255,0.4);
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+        }
+        textarea:focus {
+            border-color: #0dcaf0;
+            box-shadow: 0 0 8px rgba(13,202,240,0.6);
+            outline: none;
+            background: rgba(255,255,255,0.15);
+        }
+
+        .btn-primary {
+            border-radius: 0.7rem;
+            padding: 0.8rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            background: linear-gradient(45deg, #0d6efd, #0dcaf0);
+            border: none;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 15px rgba(13,110,253,0.5);
+        }
+
+        /* Stylish Badges */
+        .badge { 
+            font-size: 0.95rem; 
+            margin: 0.3rem; 
+            padding: 0.6em 1em;
+            border-radius: 0.8rem;
+            min-width: 120px;
+            text-align: center;
+            transition: all 0.2s ease-in-out;
+        }
+        .badge:hover {
+            transform: scale(1.1);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.25);
+        }
+
+        .toxic { background: #e63946; color: #fff; }
+        .severe_toxic { background: #b5179e; color: #fff; }
+        .obscene { background: #ff7f51; color: #fff; }
+        .threat { background: #6f42c1; color: #fff; }
+        .insult { background: #ffc107; color: #212529; }
+        .identity_hate { background: #2a9d8f; color: #fff; }
+        .bg-secondary { background: rgba(255,255,255,0.2) !important; color: #ddd; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Toxic Text Moderation</h1>
+
+        <form method="post" action="/predict">
+            <div class="mb-3">
+                <textarea name="text" class="form-control" rows="4" placeholder="Enter text..." required>{{ input_text if input_text else '' }}</textarea>
+            </div>
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary">Check Text</button>
+            </div>
+        </form>
+
+        {% if error %}
+            <div class="alert alert-danger mt-3">{{ error }}</div>
+        {% endif %}
+
+        {% if results %}
+            <div class="mt-4">
+                <h4 class="mb-3">Predictions:</h4>
+                <div class="d-flex flex-wrap">
+                    {% for label, info in results.items() %}
+                        {% if info.prediction == 1 %}
+                            <span class="badge {{ label }}">{{ label.replace('_', ' ').title() }}: {{ info.probability }}</span>
+                        {% else %}
+                            <span class="badge bg-secondary">{{ label.replace('_', ' ').title() }}: {{ info.probability }}</span>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html> 
