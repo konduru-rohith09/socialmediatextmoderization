@@ -1,0 +1,18 @@
+# Core Data Handling and Computation
+pandas
+numpy
+
+# Machine Learning and NLP
+scikit-learn
+nltk
+joblib
+
+# Deep Learning (if used)
+# tensorflow
+
+# Web Framework
+Flask
+gunicorn
+
+# (Optional) If your model uses text preprocessing features from spaCy or similar:
+# spacy
